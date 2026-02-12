@@ -1,7 +1,12 @@
 from datetime import datetime
 from decimal import Decimal
 
-from services.data_pipeline.domain.models import Feature, RawTransaction
+from services.data_pipeline.domain.models import (
+    Feature,
+    RawTransaction,
+    ValidationError,
+    ValidationReport,
+)
 
 
 class TestRawTransaction:
@@ -64,3 +69,27 @@ class TestFeature:
             assert False, "Should be frozen"
         except AttributeError:
             pass
+
+
+class TestValidationReport:
+    def test_valid_report(self):
+        report = ValidationReport(
+            total_records=1000,
+            valid_records=998,
+            errors=[],
+        )
+        assert report.is_valid
+        assert report.error_rate == 0.0
+
+    def test_invalid_report(self):
+        errors = [
+            ValidationError(field="amount", message="negative value", record_index=5),
+            ValidationError(field="timestamp", message="null value", record_index=42),
+        ]
+        report = ValidationReport(
+            total_records=1000,
+            valid_records=998,
+            errors=errors,
+        )
+        assert not report.is_valid
+        assert report.error_rate == 0.002

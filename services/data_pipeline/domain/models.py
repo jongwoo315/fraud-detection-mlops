@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 from datetime import datetime
 from decimal import Decimal
@@ -26,3 +28,31 @@ class Feature:
     is_weekend: bool
     amount_bin: str
     is_fraud: bool
+
+
+@dataclass(frozen=True)
+class ValidationError:
+    """검증 오류."""
+
+    field: str
+    message: str
+    record_index: int
+
+
+@dataclass(frozen=True)
+class ValidationReport:
+    """데이터 검증 결과."""
+
+    total_records: int
+    valid_records: int
+    errors: tuple[ValidationError, ...] | list[ValidationError]
+
+    @property
+    def is_valid(self) -> bool:
+        return len(self.errors) == 0
+
+    @property
+    def error_rate(self) -> float:
+        if self.total_records == 0:
+            return 0.0
+        return len(self.errors) / self.total_records
