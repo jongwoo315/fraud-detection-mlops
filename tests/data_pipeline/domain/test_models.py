@@ -1,7 +1,7 @@
 from datetime import datetime
 from decimal import Decimal
 
-from services.data_pipeline.domain.models import RawTransaction
+from services.data_pipeline.domain.models import Feature, RawTransaction
 
 
 class TestRawTransaction:
@@ -29,6 +29,38 @@ class TestRawTransaction:
         )
         try:
             tx.amount = Decimal("999.99")
+            assert False, "Should be frozen"
+        except AttributeError:
+            pass
+
+
+class TestFeature:
+    def test_create_feature(self):
+        feature = Feature(
+            transaction_id="tx_001",
+            amount=Decimal("150.00"),
+            hour_of_day=10,
+            day_of_week=0,
+            is_weekend=False,
+            amount_bin="medium",
+            is_fraud=False,
+        )
+        assert feature.transaction_id == "tx_001"
+        assert feature.hour_of_day == 10
+        assert feature.amount_bin == "medium"
+
+    def test_feature_immutable(self):
+        feature = Feature(
+            transaction_id="tx_001",
+            amount=Decimal("100.00"),
+            hour_of_day=14,
+            day_of_week=5,
+            is_weekend=True,
+            amount_bin="low",
+            is_fraud=True,
+        )
+        try:
+            feature.hour_of_day = 99
             assert False, "Should be frozen"
         except AttributeError:
             pass
