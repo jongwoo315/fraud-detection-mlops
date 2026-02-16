@@ -1,6 +1,8 @@
 from datetime import datetime
 from decimal import Decimal
 
+import pytest
+
 from services.data_pipeline.domain.models import (
     Feature,
     RawTransaction,
@@ -32,11 +34,8 @@ class TestRawTransaction:
             customer_id="c1",
             is_fraud=False,
         )
-        try:
+        with pytest.raises(AttributeError):
             tx.amount = Decimal("999.99")
-            assert False, "Should be frozen"
-        except AttributeError:
-            pass
 
 
 class TestFeature:
