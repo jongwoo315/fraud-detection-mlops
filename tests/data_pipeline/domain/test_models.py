@@ -72,16 +72,16 @@ class TestValidationReport:
         report = ValidationReport(
             total_records=1000,
             valid_records=998,
-            errors=[],
+            errors=(),
         )
         assert report.is_valid
         assert report.error_rate == 0.0
 
     def test_invalid_report(self):
-        errors = [
+        errors = (
             ValidationError(field="amount", message="negative value", record_index=5),
             ValidationError(field="timestamp", message="null value", record_index=42),
-        ]
+        )
         report = ValidationReport(
             total_records=1000,
             valid_records=998,
