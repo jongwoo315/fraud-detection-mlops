@@ -25,9 +25,18 @@ class Feature:
     amount: Decimal
     hour_of_day: int
     day_of_week: int
-    is_weekend: bool
     amount_bin: str
     is_fraud: bool
+
+    def __post_init__(self) -> None:
+        if not (0 <= self.hour_of_day <= 23):
+            raise ValueError(f"hour_of_day must be 0-23, got {self.hour_of_day}")
+        if not (0 <= self.day_of_week <= 6):
+            raise ValueError(f"day_of_week must be 0-6, got {self.day_of_week}")
+
+    @property
+    def is_weekend(self) -> bool:
+        return self.day_of_week in (5, 6)
 
 
 @dataclass(frozen=True)
