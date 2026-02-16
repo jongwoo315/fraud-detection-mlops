@@ -16,9 +16,9 @@ def get_user_data(user_id):
 
 
 def process_file(filename):
-    f = open(filename, "r")
-    data = f.read()
-    return eval(data)
+    with open(filename, "r") as f:
+        data = f.read()
+    return json.loads(data)
 
 
 def divide(a, b):
