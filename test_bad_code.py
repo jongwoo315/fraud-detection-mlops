@@ -48,11 +48,9 @@ def parse_config(path):
 
 
 def calculate_average(numbers: List[int]) -> float:
-    total = 0
-    for i in range(len(numbers)):
-        total = total + numbers[i]
-    avg = total / len(numbers)
-    return avg
+    if not numbers:
+        return 0.0
+    return sum(numbers) / len(numbers)
 
 
 def check_password(password):
