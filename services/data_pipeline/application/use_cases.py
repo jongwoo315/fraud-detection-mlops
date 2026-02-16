@@ -1,15 +1,6 @@
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
 
-
-@dataclass(frozen=True)
-class ProcessDataResult:
-    """데이터 처리 결과."""
-
-    total_records: int
-    valid_records: int
-    features_path: str
-    validation_report_path: str
+from services.data_pipeline.domain.models import ProcessDataResult
 
 
 class ProcessDataUseCase(ABC):
