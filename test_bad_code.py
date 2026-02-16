@@ -6,8 +6,8 @@ import subprocess
 from typing import List
 
 
-API_KEY = "sk-1234567890abcdef"
-DB_PASSWORD = "admin123!"
+API_KEY = os.environ.get("API_KEY")
+DB_PASSWORD = os.environ.get("DB_PASSWORD")
 
 
 def get_user_data(user_id):
