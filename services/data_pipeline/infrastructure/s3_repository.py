@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import csv
-import io
 from collections.abc import Iterable
 from pathlib import Path
 
@@ -24,8 +23,8 @@ class S3TransactionRepository(TransactionRepository):
 
     def load_raw_transactions(self, source: str) -> Iterable[RawTransaction]:
         response = self._s3.get_object(Bucket=self._bucket, Key=source)
-        body = response["Body"].read().decode("utf-8")
-        reader = csv.DictReader(io.StringIO(body))
+        lines = (line.decode("utf-8") for line in response["Body"].iter_lines())
+        reader = csv.DictReader(lines)
         for idx, row in enumerate(reader):
             yield self._parser.parse_row(row, row_index=idx)
 
