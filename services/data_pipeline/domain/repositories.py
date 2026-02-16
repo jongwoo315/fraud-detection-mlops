@@ -12,7 +12,7 @@ class TransactionRepository(ABC):
         """원본 거래 데이터를 로드한다."""
 
     @abstractmethod
-    def save_features(self, features: list[Feature], destination: str) -> Path:
+    def save_features(self, features: "Iterable[Feature]", destination: str) -> Path:
         """엔지니어링된 피처를 저장한다."""
 
 
