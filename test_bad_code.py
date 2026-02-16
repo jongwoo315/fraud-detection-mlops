@@ -58,9 +58,6 @@ def check_password(password, stored_hash):
     return hashlib.sha256(password.encode()).hexdigest() == stored_hash
 
 
-unused_global = []
-another_unused = {}
-
 
 def infinite_risk():
     data = []
