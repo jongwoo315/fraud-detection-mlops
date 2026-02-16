@@ -5,6 +5,7 @@ import pytest
 
 from services.data_pipeline.domain.models import (
     Feature,
+    ProcessDataResult,
     RawTransaction,
     ValidationError,
     ValidationReport,
@@ -67,6 +68,29 @@ class TestFeature:
             feature.hour_of_day = 99
 
 
+class TestProcessDataResult:
+    def test_create_process_data_result(self):
+        result = ProcessDataResult(
+            total_records=1000,
+            valid_records=998,
+            features_path="/data/features.parquet",
+            validation_report_path="/data/report.json",
+        )
+        assert result.total_records == 1000
+        assert result.valid_records == 998
+        assert result.features_path == "/data/features.parquet"
+
+    def test_process_data_result_immutable(self):
+        result = ProcessDataResult(
+            total_records=100,
+            valid_records=95,
+            features_path="/a",
+            validation_report_path="/b",
+        )
+        with pytest.raises(AttributeError):
+            result.total_records = 999
+
+
 class TestValidationReport:
     def test_valid_report(self):
         report = ValidationReport(
@@ -89,3 +113,4 @@ class TestValidationReport:
         )
         assert not report.is_valid
         assert report.error_rate == 0.002
+
