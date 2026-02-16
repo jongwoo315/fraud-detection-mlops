@@ -28,8 +28,8 @@ def _upload_csv(bucket: str, key: str, rows: list[dict]) -> None:
     s3.put_object(Bucket=bucket, Key=key, Body=output.getvalue())
 
 
-@mock_aws
 class TestS3TransactionRepository:
+    @mock_aws
     def test_load_raw_transactions(self):
         _upload_csv("test-bucket", "raw/creditcard.csv", [
             _make_kaggle_row(Time="0.0", Amount="149.62", Class="0"),
@@ -41,12 +41,14 @@ class TestS3TransactionRepository:
         assert transactions[0].transaction_id == "txn_000000"
         assert transactions[1].is_fraud is True
 
+    @mock_aws
     def test_load_empty_csv(self):
         _upload_csv("test-bucket", "raw/empty.csv", [])
         repo = S3TransactionRepository(bucket="test-bucket")
         transactions = list(repo.load_raw_transactions("raw/empty.csv"))
         assert len(transactions) == 0
 
+    @mock_aws
     def test_load_nonexistent_key_raises(self):
         s3 = boto3.client("s3", region_name="us-east-1")
         s3.create_bucket(Bucket="test-bucket")
