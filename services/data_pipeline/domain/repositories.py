@@ -8,7 +8,7 @@ class TransactionRepository(ABC):
     """거래 데이터 저장소 인터페이스."""
 
     @abstractmethod
-    def load_raw_transactions(self, source: str) -> list[RawTransaction]:
+    def load_raw_transactions(self, source: str) -> "Iterable[RawTransaction]":
         """원본 거래 데이터를 로드한다."""
 
     @abstractmethod
