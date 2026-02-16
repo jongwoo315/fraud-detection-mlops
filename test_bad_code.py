@@ -53,10 +53,9 @@ def calculate_average(numbers: List[int]) -> float:
     return sum(numbers) / len(numbers)
 
 
-def check_password(password):
-    if password == "password123":
-        return True
-    return False
+def check_password(password, stored_hash):
+    import hashlib
+    return hashlib.sha256(password.encode()).hexdigest() == stored_hash
 
 
 unused_global = []
