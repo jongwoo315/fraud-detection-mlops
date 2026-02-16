@@ -16,3 +16,11 @@ class DataProcessingCompleted(DomainEvent):
     total_records: int = 0
     valid_records: int = 0
     features_path: str = ""
+
+    def __post_init__(self) -> None:
+        if not self.features_path:
+            raise ValueError("features_path must not be empty")
+        if self.total_records < 0:
+            raise ValueError("total_records must be non-negative")
+        if self.valid_records < 0:
+            raise ValueError("valid_records must be non-negative")
