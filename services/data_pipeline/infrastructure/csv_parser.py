@@ -26,9 +26,14 @@ class KaggleCsvParser:
                 f" '{row['Amount']}'"
             ) from e
 
-        pca_features = tuple(
-            float(row[col]) for col in _PCA_COLUMNS
-        )
+        try:
+            pca_features = tuple(
+                float(row[col]) for col in _PCA_COLUMNS
+            )
+        except ValueError as e:
+            raise ValueError(
+                f"Row {row_index}: invalid PCA feature value"
+            ) from e
 
         return RawTransaction(
             transaction_id=f"txn_{row_index:06d}",

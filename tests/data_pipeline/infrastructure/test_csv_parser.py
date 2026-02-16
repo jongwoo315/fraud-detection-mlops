@@ -53,3 +53,9 @@ class TestKaggleCsvParser:
         row = self._make_kaggle_row(Amount="not_a_number")
         with pytest.raises(ValueError):
             parser.parse_row(row, row_index=0)
+
+    def test_parse_invalid_pca_feature_raises(self):
+        parser = KaggleCsvParser()
+        row = self._make_kaggle_row(V5="not_a_number")
+        with pytest.raises(ValueError, match="Row 3"):
+            parser.parse_row(row, row_index=3)
