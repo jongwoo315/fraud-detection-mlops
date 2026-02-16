@@ -1,15 +1,14 @@
 import inspect
 
+import pytest
+
 from services.data_pipeline.application.use_cases import ProcessDataUseCase
 
 
 class TestProcessDataUseCaseInterface:
     def test_is_abstract(self):
-        try:
+        with pytest.raises(TypeError):
             ProcessDataUseCase()
-            assert False, "Should not instantiate abstract class"
-        except TypeError:
-            pass
 
     def test_has_execute_method(self):
         assert hasattr(ProcessDataUseCase, "execute")
