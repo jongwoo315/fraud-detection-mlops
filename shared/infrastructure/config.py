@@ -1,3 +1,4 @@
+import os
 from dataclasses import dataclass
 
 
@@ -5,7 +6,7 @@ from dataclasses import dataclass
 class Settings:
     """공유 설정."""
 
-    s3_bucket: str = "fraud-detection-data"
-    s3_raw_data_prefix: str = "raw/"
-    s3_features_prefix: str = "features/"
-    mlflow_tracking_uri: str = "http://localhost:5000"
+    s3_bucket: str = os.environ.get("S3_BUCKET", "fraud-detection-data")
+    s3_raw_data_prefix: str = os.environ.get("S3_RAW_DATA_PREFIX", "raw/")
+    s3_features_prefix: str = os.environ.get("S3_FEATURES_PREFIX", "features/")
+    mlflow_tracking_uri: str = os.environ.get("MLFLOW_TRACKING_URI", "http://localhost:5000")
