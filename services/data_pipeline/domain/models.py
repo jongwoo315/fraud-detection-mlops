@@ -63,8 +63,17 @@ class ValidationReport:
     """데이터 검증 결과."""
 
     total_records: int
-    valid_records: int
     errors: tuple[ValidationError, ...]
+
+    def __post_init__(self) -> None:
+        if self.total_records < 0:
+            raise ValueError("total_records must be non-negative")
+        if self.total_records == 0 and len(self.errors) > 0:
+            raise ValueError("errors cannot exist when total_records is 0")
+
+    @property
+    def valid_records(self) -> int:
+        return self.total_records - len(self.errors)
 
     @property
     def is_valid(self) -> bool:

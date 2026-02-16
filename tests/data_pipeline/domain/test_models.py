@@ -164,10 +164,10 @@ class TestValidationReport:
     def test_valid_report(self):
         report = ValidationReport(
             total_records=1000,
-            valid_records=998,
             errors=(),
         )
         assert report.is_valid
+        assert report.valid_records == 1000
         assert report.error_rate == 0.0
 
     def test_invalid_report(self):
@@ -177,9 +177,27 @@ class TestValidationReport:
         )
         report = ValidationReport(
             total_records=1000,
-            valid_records=998,
             errors=errors,
         )
         assert not report.is_valid
+        assert report.valid_records == 998
         assert report.error_rate == 0.002
+
+    def test_valid_records_derived_from_errors(self):
+        errors = (
+            ValidationError(field="amount", message="negative", record_index=0),
+        )
+        report = ValidationReport(total_records=10, errors=errors)
+        assert report.valid_records == 9
+
+    def test_negative_total_records_rejected(self):
+        with pytest.raises(ValueError, match="total_records must be non-negative"):
+            ValidationReport(total_records=-1, errors=())
+
+    def test_errors_with_zero_total_rejected(self):
+        errors = (
+            ValidationError(field="amount", message="bad", record_index=0),
+        )
+        with pytest.raises(ValueError, match="errors cannot exist when total_records is 0"):
+            ValidationReport(total_records=0, errors=errors)
 
