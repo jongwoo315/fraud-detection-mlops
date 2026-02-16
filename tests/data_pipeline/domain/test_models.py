@@ -1,4 +1,3 @@
-from datetime import datetime
 from decimal import Decimal
 
 import pytest
@@ -15,28 +14,59 @@ from services.data_pipeline.domain.models import (
 class TestRawTransaction:
     def test_create_raw_transaction(self):
         tx = RawTransaction(
-            transaction_id="tx_001",
-            amount=Decimal("150.00"),
-            timestamp=datetime(2024, 1, 15, 10, 30, 0),
-            merchant_id="merchant_001",
-            customer_id="customer_001",
+            transaction_id="txn_000001",
+            time_seconds=0.0,
+            amount=Decimal("149.62"),
             is_fraud=False,
+            pca_features=(
+                -1.36, -0.07, 2.54, 1.38, -0.34,
+                0.46, 0.24, 0.10, 0.36, 0.09,
+                -0.55, -0.62, -0.99, -0.31, 2.10,
+                -0.03, 0.64, 0.21, -0.03, 0.50,
+                0.22, 0.06, -0.07, 0.48, -0.19,
+                0.18, -0.09, -0.06,
+            ),
         )
-        assert tx.transaction_id == "tx_001"
-        assert tx.amount == Decimal("150.00")
+        assert tx.transaction_id == "txn_000001"
+        assert tx.time_seconds == 0.0
+        assert tx.amount == Decimal("149.62")
         assert tx.is_fraud is False
+        assert len(tx.pca_features) == 28
 
     def test_raw_transaction_immutable(self):
         tx = RawTransaction(
-            transaction_id="tx_001",
+            transaction_id="txn_000001",
+            time_seconds=0.0,
             amount=Decimal("100.00"),
-            timestamp=datetime(2024, 1, 15, 10, 30, 0),
-            merchant_id="m1",
-            customer_id="c1",
             is_fraud=False,
+            pca_features=(0.0,) * 28,
         )
         with pytest.raises(AttributeError):
             tx.amount = Decimal("999.99")
+
+    def test_pca_features_must_have_28_elements(self):
+        with pytest.raises(
+            ValueError, match="pca_features must have 28 elements"
+        ):
+            RawTransaction(
+                transaction_id="txn_000001",
+                time_seconds=0.0,
+                amount=Decimal("100.00"),
+                is_fraud=False,
+                pca_features=(0.0,) * 27,
+            )
+
+    def test_time_seconds_must_be_non_negative(self):
+        with pytest.raises(
+            ValueError, match="time_seconds must be non-negative"
+        ):
+            RawTransaction(
+                transaction_id="txn_000001",
+                time_seconds=-1.0,
+                amount=Decimal("100.00"),
+                is_fraud=False,
+                pca_features=(0.0,) * 28,
+            )
 
 
 class TestFeature:

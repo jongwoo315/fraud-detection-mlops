@@ -1,20 +1,27 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime
 from decimal import Decimal
 
 
 @dataclass(frozen=True)
 class RawTransaction:
-    """원본 거래 데이터."""
+    """Kaggle Credit Card Fraud Detection 원본 거래 데이터."""
 
     transaction_id: str
+    time_seconds: float
     amount: Decimal
-    timestamp: datetime
-    merchant_id: str
-    customer_id: str
     is_fraud: bool
+    pca_features: tuple[float, ...]
+
+    def __post_init__(self) -> None:
+        if len(self.pca_features) != 28:
+            raise ValueError(
+                "pca_features must have 28 elements, "
+                f"got {len(self.pca_features)}"
+            )
+        if self.time_seconds < 0:
+            raise ValueError("time_seconds must be non-negative")
 
 
 @dataclass(frozen=True)
