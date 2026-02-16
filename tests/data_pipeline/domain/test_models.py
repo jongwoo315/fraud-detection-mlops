@@ -63,11 +63,8 @@ class TestFeature:
             amount_bin="low",
             is_fraud=True,
         )
-        try:
+        with pytest.raises(AttributeError):
             feature.hour_of_day = 99
-            assert False, "Should be frozen"
-        except AttributeError:
-            pass
 
 
 class TestValidationReport:
