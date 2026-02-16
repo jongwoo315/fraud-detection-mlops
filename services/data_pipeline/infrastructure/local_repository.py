@@ -22,7 +22,7 @@ class LocalFileTransactionRepository(TransactionRepository):
         if not path.exists():
             raise FileNotFoundError(f"File not found: {source}")
 
-        with open(path, newline="") as f:
+        with open(path, encoding="utf-8", newline="") as f:
             reader = csv.DictReader(f)
             for idx, row in enumerate(reader):
                 yield self._parser.parse_row(row, row_index=idx)
