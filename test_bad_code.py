@@ -11,8 +11,8 @@ DB_PASSWORD = os.environ.get("DB_PASSWORD")
 
 
 def get_user_data(user_id):
-    query = f"SELECT * FROM users WHERE id = {user_id}"
-    return execute_query(query)
+    query = "SELECT * FROM users WHERE id = %s"
+    return execute_query(query, (user_id,))
 
 
 def process_file(filename):
