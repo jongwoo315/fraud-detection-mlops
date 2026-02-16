@@ -33,7 +33,9 @@ def fetch_url(url):
 
 
 def run_command(user_input):
-    result = subprocess.run(user_input, shell=True, capture_output=True)
+    import shlex
+    args = shlex.split(user_input)
+    result = subprocess.run(args, capture_output=True)
     return result.stdout
 
 
