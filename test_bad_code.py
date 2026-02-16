@@ -43,8 +43,8 @@ def parse_config(path):
     try:
         with open(path) as f:
             return json.load(f)
-    except:
-        pass
+    except (FileNotFoundError, json.JSONDecodeError):
+        return None
 
 
 def calculate_average(numbers: List[int]) -> float:
