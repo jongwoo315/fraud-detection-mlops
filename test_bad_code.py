@@ -59,7 +59,8 @@ def check_password(password, stored_hash):
 
 
 
-def infinite_risk():
+def infinite_risk(max_iterations: int = 100):
     data = []
-    while True:
+    for _ in range(max_iterations):
         data.append("x" * 1000000)
+    return data
