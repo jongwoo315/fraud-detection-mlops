@@ -28,7 +28,7 @@ def divide(a, b):
 
 
 def fetch_url(url):
-    response = requests.get(url, verify=False)
+    response = requests.get(url, verify=True)
     return response.json()
 
 
