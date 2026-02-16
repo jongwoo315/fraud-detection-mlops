@@ -45,7 +45,7 @@ class ValidationReport:
 
     total_records: int
     valid_records: int
-    errors: tuple[ValidationError, ...] | list[ValidationError]
+    errors: tuple[ValidationError, ...]
 
     @property
     def is_valid(self) -> bool:
