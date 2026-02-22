@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import csv
-from collections.abc import Iterable
+from collections.abc import Iterable, Iterator
 from pathlib import Path
 
 from services.data_pipeline.domain.models import Feature, RawTransaction
@@ -17,7 +17,7 @@ class LocalFileTransactionRepository(TransactionRepository):
     def __init__(self) -> None:
         self._parser = KaggleCsvParser()
 
-    def load_raw_transactions(self, source: str) -> Iterable[RawTransaction]:
+    def load_raw_transactions(self, source: str) -> Iterator[RawTransaction]:
         path = Path(source)
         if not path.exists():
             raise FileNotFoundError(f"File not found: {source}")

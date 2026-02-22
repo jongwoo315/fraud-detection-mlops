@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import csv
-from collections.abc import Iterable
+from collections.abc import Iterable, Iterator
 from pathlib import Path
 
 import boto3
@@ -21,7 +21,7 @@ class S3TransactionRepository(TransactionRepository):
         self._s3 = s3_client or boto3.client("s3")
         self._parser = KaggleCsvParser()
 
-    def load_raw_transactions(self, source: str) -> Iterable[RawTransaction]:
+    def load_raw_transactions(self, source: str) -> Iterator[RawTransaction]:
         response = self._s3.get_object(Bucket=self._bucket, Key=source)
         lines = (line.decode("utf-8") for line in response["Body"].iter_lines())
         reader = csv.DictReader(lines)

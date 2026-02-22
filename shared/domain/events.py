@@ -24,3 +24,5 @@ class DataProcessingCompleted(DomainEvent):
             raise ValueError("total_records must be non-negative")
         if self.valid_records < 0:
             raise ValueError("valid_records must be non-negative")
+        if self.valid_records > self.total_records:
+            raise ValueError("valid_records cannot exceed total_records")

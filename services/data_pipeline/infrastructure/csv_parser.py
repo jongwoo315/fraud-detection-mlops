@@ -35,10 +35,23 @@ class KaggleCsvParser:
                 f"Row {row_index}: invalid PCA feature value"
             ) from e
 
+        try:
+            time_seconds = float(row["Time"])
+        except (ValueError, TypeError) as e:
+            raise ValueError(
+                f"Row {row_index}: invalid Time '{row.get('Time')}'"
+            ) from e
+
+        class_value = row["Class"]
+        if class_value not in ("0", "1"):
+            raise ValueError(
+                f"Row {row_index}: invalid Class '{class_value}', expected '0' or '1'"
+            )
+
         return RawTransaction(
             transaction_id=f"txn_{row_index:06d}",
-            time_seconds=float(row["Time"]),
+            time_seconds=time_seconds,
             amount=amount,
-            is_fraud=row["Class"] == "1",
+            is_fraud=class_value == "1",
             pca_features=pca_features,
         )
