@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import timezone
 
 import pytest
 
@@ -47,5 +47,13 @@ class TestDataProcessingCompleted:
             DataProcessingCompleted(
                 total_records=10,
                 valid_records=-1,
+                features_path="/data/features.parquet",
+            )
+
+    def test_valid_records_exceeding_total_rejected(self):
+        with pytest.raises(ValueError, match="valid_records cannot exceed total_records"):
+            DataProcessingCompleted(
+                total_records=5,
+                valid_records=10,
                 features_path="/data/features.parquet",
             )

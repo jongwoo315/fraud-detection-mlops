@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from collections.abc import Iterable
+from collections.abc import Iterable, Iterator
 from pathlib import Path
 
 from services.data_pipeline.domain.models import Feature, RawTransaction, ValidationReport
@@ -11,8 +11,8 @@ class TransactionRepository(ABC):
     """거래 데이터 저장소 인터페이스."""
 
     @abstractmethod
-    def load_raw_transactions(self, source: str) -> Iterable[RawTransaction]:
-        """원본 거래 데이터를 로드한다."""
+    def load_raw_transactions(self, source: str) -> Iterator[RawTransaction]:
+        """원본 거래 데이터를 로드한다. 반환값은 1회성 Iterator."""
 
     @abstractmethod
     def save_features(self, features: Iterable[Feature], destination: str) -> Path:
