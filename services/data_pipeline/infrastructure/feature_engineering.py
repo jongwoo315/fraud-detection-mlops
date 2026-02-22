@@ -10,7 +10,6 @@ from services.data_pipeline.domain.services import FeatureEngineeringService
 
 SECONDS_PER_DAY = 86400
 SECONDS_PER_HOUR = 3600
-HOURS_PER_DAY = 24
 DAYS_PER_WEEK = 7
 
 AMOUNT_LOW_UPPER = Decimal("10")
