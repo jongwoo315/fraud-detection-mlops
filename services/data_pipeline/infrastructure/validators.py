@@ -6,6 +6,7 @@ import math
 from collections.abc import Iterable
 
 from services.data_pipeline.domain.models import (
+    PCA_FEATURES_COUNT,
     RawTransaction,
     ValidationError,
     ValidationReport,
@@ -65,7 +66,7 @@ class TransactionValidator:
                 ValidationError("is_fraud", "invalid is_fraud type", index)
             )
 
-        if len(txn.pca_features) != 28:
+        if len(txn.pca_features) != PCA_FEATURES_COUNT:
             errors.append(
                 ValidationError(
                     "pca_features", "pca_features count mismatch", index

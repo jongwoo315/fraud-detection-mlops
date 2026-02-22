@@ -3,6 +3,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from decimal import Decimal
 
+PCA_FEATURES_COUNT = 28
+
 
 @dataclass(frozen=True)
 class RawTransaction:
@@ -15,7 +17,7 @@ class RawTransaction:
     pca_features: tuple[float, ...]
 
     def __post_init__(self) -> None:
-        if len(self.pca_features) != 28:
+        if len(self.pca_features) != PCA_FEATURES_COUNT:
             raise ValueError(
                 "pca_features must have 28 elements, "
                 f"got {len(self.pca_features)}"
