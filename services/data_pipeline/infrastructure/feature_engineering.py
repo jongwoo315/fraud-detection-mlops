@@ -29,8 +29,8 @@ class KaggleFeatureEngineeringService(FeatureEngineeringService):
     @staticmethod
     def _to_feature(txn: RawTransaction) -> Feature:
         """단일 RawTransaction을 Feature로 변환한다."""
-        hour_of_day = int((txn.time_seconds % SECONDS_PER_DAY) / SECONDS_PER_HOUR)
-        day_of_week = int(txn.time_seconds / SECONDS_PER_DAY) % DAYS_PER_WEEK
+        hour_of_day = (int(txn.time_seconds) % SECONDS_PER_DAY) // SECONDS_PER_HOUR
+        day_of_week = (int(txn.time_seconds) // SECONDS_PER_DAY) % DAYS_PER_WEEK
 
         if txn.amount < AMOUNT_LOW_UPPER:
             amount_bin = "low"
