@@ -107,6 +107,17 @@ class TestSaveFeatures:
         assert rows[1]["is_weekend"] == "True"
         assert rows[1]["is_fraud"] == "True"
 
+    def test_save_features_empty(self, tmp_path):
+        """빈 피처 리스트를 저장하면 헤더만 있는 CSV가 생성된다."""
+        dest = tmp_path / "empty.csv"
+        repo = LocalFileTransactionRepository()
+        repo.save_features([], str(dest))
+
+        with open(dest, encoding="utf-8", newline="") as f:
+            reader = csv.DictReader(f)
+            rows = list(reader)
+        assert len(rows) == 0
+
     def test_save_features_auto_creates_directory(self, tmp_path, sample_features):
         """존재하지 않는 디렉토리 경로에 저장하면 디렉토리가 자동 생성된다."""
         dest = tmp_path / "nested" / "deep" / "features.csv"
@@ -147,6 +158,17 @@ class TestLocalFileValidationReportRepository:
         assert data["error_rate"] == 0.0
         assert data["is_valid"] is True
         assert data["errors"] == []
+
+    def test_save_report_auto_creates_directory(self, tmp_path):
+        """존재하지 않는 디렉토리 경로에 저장하면 디렉토리가 자동 생성된다."""
+        report = ValidationReport(total_records=10, errors=())
+        dest = tmp_path / "nested" / "report.json"
+        repo = LocalFileValidationReportRepository()
+
+        result = repo.save_report(report, str(dest))
+
+        assert result == dest
+        assert dest.exists()
 
     def test_save_report_with_errors(self, tmp_path):
         """에러가 포함된 리포트가 올바르게 저장된다."""
