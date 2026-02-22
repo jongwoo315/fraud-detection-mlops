@@ -99,6 +99,50 @@ class TestInvalidTransactions:
         assert report.errors[0].field == "pca_features"
         assert report.errors[0].message == "pca_features contains NaN or Inf"
 
+    def test_nan_time_seconds_collected(
+        self, validator: TransactionValidator
+    ) -> None:
+        txns = [_make_txn(time_seconds=math.nan)]
+        valid, report = validator.validate(txns)
+
+        assert len(valid) == 0
+        assert len(report.errors) == 1
+        assert report.errors[0].field == "time_seconds"
+        assert report.errors[0].message == "invalid time_seconds"
+
+    def test_inf_time_seconds_collected(
+        self, validator: TransactionValidator
+    ) -> None:
+        txns = [_make_txn(time_seconds=math.inf)]
+        valid, report = validator.validate(txns)
+
+        assert len(valid) == 0
+        assert len(report.errors) == 1
+        assert report.errors[0].field == "time_seconds"
+        assert report.errors[0].message == "invalid time_seconds"
+
+    def test_non_bool_is_fraud_collected(
+        self, validator: TransactionValidator
+    ) -> None:
+        txns = [_make_txn(is_fraud=1)]
+        valid, report = validator.validate(txns)
+
+        assert len(valid) == 0
+        assert len(report.errors) == 1
+        assert report.errors[0].field == "is_fraud"
+        assert report.errors[0].message == "invalid is_fraud type"
+
+    def test_multiple_errors_collected(
+        self, validator: TransactionValidator
+    ) -> None:
+        txns = [_make_txn(transaction_id="", is_fraud=1)]
+        valid, report = validator.validate(txns)
+
+        assert len(valid) == 0
+        assert len(report.errors) == 2
+        fields = {e.field for e in report.errors}
+        assert fields == {"transaction_id", "is_fraud"}
+
 
 class TestMixedTransactions:
     def test_valid_and_invalid_mixed(
