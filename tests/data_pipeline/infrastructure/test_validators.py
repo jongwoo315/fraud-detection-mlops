@@ -71,7 +71,7 @@ class TestInvalidTransactions:
         assert len(valid) == 0
         assert len(report.errors) == 1
         assert report.errors[0].field == "amount"
-        assert report.errors[0].message == "negative amount"
+        assert report.errors[0].message == "invalid amount"
 
     def test_nan_in_pca_features_collected(
         self, validator: TransactionValidator

@@ -51,14 +51,14 @@ class TransactionValidator:
                 ValidationError("transaction_id", "empty transaction_id", index)
             )
 
-        if txn.time_seconds < 0:
+        if not math.isfinite(txn.time_seconds) or txn.time_seconds < 0:
             errors.append(
-                ValidationError("time_seconds", "negative time_seconds", index)
+                ValidationError("time_seconds", "invalid time_seconds", index)
             )
 
-        if txn.amount < 0:
+        if not txn.amount.is_finite() or txn.amount < 0:
             errors.append(
-                ValidationError("amount", "negative amount", index)
+                ValidationError("amount", "invalid amount", index)
             )
 
         if not isinstance(txn.is_fraud, bool):
