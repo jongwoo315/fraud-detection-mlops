@@ -9,6 +9,9 @@ from __future__ import annotations
 import csv
 from pathlib import Path
 
+from services.data_pipeline.infrastructure.feature_engineering import (
+    KaggleFeatureEngineeringService,
+)
 from services.data_pipeline.infrastructure.local_repository import (
     LocalFileTransactionRepository,
     LocalFileValidationReportRepository,
@@ -95,4 +98,25 @@ def validate_data(
         "report_path": str(report_path),
         "output_path": str(output_path),
         "should_skip": error_rate > VALIDATION_ERROR_THRESHOLD,
+    }
+
+
+def engineer_features(
+    *,
+    input_path: str,
+    intermediate_dir: str,
+) -> dict:
+    """검증된 트랜잭션에서 피처를 추출하고 중간 파일로 저장."""
+    repo = LocalFileTransactionRepository()
+    transactions = list(repo.load_raw_transactions(input_path))
+
+    service = KaggleFeatureEngineeringService()
+    features = list(service.extract_features(transactions))
+
+    output_path = str(Path(intermediate_dir) / "engineered_features.csv")
+    repo.save_features(features, output_path)
+
+    return {
+        "feature_count": len(features),
+        "output_path": output_path,
     }

@@ -103,3 +103,20 @@ class TestValidateData:
         assert result["should_skip"] is True
         assert result["valid_count"] == 0
         assert result["invalid_count"] == 2
+
+
+class TestEngineerFeatures:
+    def test_extracts_features_and_saves(self, kaggle_csv, data_dirs):
+        rows = [
+            make_kaggle_row(Time="3600.0", Amount="149.62", Class="0"),
+            make_kaggle_row(Time="7200.0", Amount="2.69", Class="1"),
+        ]
+        input_path = str(kaggle_csv(rows))
+        intermediate_dir = str(data_dirs["intermediate"])
+
+        from services.data_pipeline.interface.airflow.tasks import engineer_features
+
+        result = engineer_features(input_path=input_path, intermediate_dir=intermediate_dir)
+
+        assert result["feature_count"] == 2
+        assert Path(result["output_path"]).exists()
