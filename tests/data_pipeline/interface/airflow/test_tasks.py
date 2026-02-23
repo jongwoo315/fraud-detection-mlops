@@ -120,3 +120,23 @@ class TestEngineerFeatures:
 
         assert result["feature_count"] == 2
         assert Path(result["output_path"]).exists()
+
+
+class TestSaveFeatures:
+    def test_copies_features_to_final_destination(self, kaggle_csv, data_dirs):
+        rows = [make_kaggle_row(Time="3600.0", Amount="149.62", Class="0")]
+        input_path = str(kaggle_csv(rows))
+
+        from services.data_pipeline.interface.airflow.tasks import engineer_features, save_features
+
+        eng_result = engineer_features(
+            input_path=input_path, intermediate_dir=str(data_dirs["intermediate"])
+        )
+
+        result = save_features(
+            input_path=eng_result["output_path"], features_dir=str(data_dirs["features"])
+        )
+
+        assert result["saved_count"] == 1
+        assert Path(result["output_path"]).exists()
+        assert "creditcard_features.csv" in result["output_path"]

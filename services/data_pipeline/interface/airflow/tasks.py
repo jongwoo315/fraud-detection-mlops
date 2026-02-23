@@ -7,6 +7,7 @@ Airflow에 의존하지 않는 순수 Python 함수이므로 단독 테스트 �
 from __future__ import annotations
 
 import csv
+import shutil
 from pathlib import Path
 
 from services.data_pipeline.infrastructure.feature_engineering import (
@@ -119,4 +120,26 @@ def engineer_features(
     return {
         "feature_count": len(features),
         "output_path": output_path,
+    }
+
+
+def save_features(
+    *,
+    input_path: str,
+    features_dir: str,
+) -> dict:
+    """엔지니어링된 피처를 최종 피처 디렉토리로 복사."""
+    output_path = Path(features_dir) / "creditcard_features.csv"
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    shutil.copy2(input_path, output_path)
+
+    with open(output_path, newline="") as f:
+        reader = csv.reader(f)
+        next(reader)  # skip header
+        saved_count = sum(1 for _ in reader)
+
+    return {
+        "output_path": str(output_path),
+        "saved_count": saved_count,
     }
