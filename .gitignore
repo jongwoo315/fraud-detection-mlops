@@ -11,3 +11,8 @@ dist/
 .pytest_cache/
 htmlcov/
 .coverage
+
+# Airflow data (keep directory structure, ignore actual data)
+services/data_pipeline/interface/airflow/data/**/*.csv
+services/data_pipeline/interface/airflow/data/**/*.json
+!services/data_pipeline/interface/airflow/data/**/.gitkeep
